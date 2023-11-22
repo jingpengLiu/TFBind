@@ -1,4 +1,3 @@
-# 制作训练数据集
 import torch
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
@@ -30,13 +29,6 @@ class MyDataSet(Dataset):
 
 
 if __name__ == '__main__':
-    nuc_data = [["dasdasdasdasd"], ["asdasdasdasdasd"], ["sdasdasdasdasdas"]]
-    nuc_label = [0 , 1, 2]
-    nuc = MyDataSet(nuc_data, nuc_label, True)
-    print(nuc.x)
-    nuc.x = [['asdasdasd'], ['asdasdasdasd']]
-    print(nuc.x)
-
     print("Hello")
 
 

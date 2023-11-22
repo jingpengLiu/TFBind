@@ -5,7 +5,7 @@ import os, shutil, random
 import pandas as pd
 import numpy as np
 from sklearn.utils import shuffle
-# 制作dataset
+# make dataset
 def make_train_dataset():
     label_list = []
     sequence_list = []
@@ -61,7 +61,7 @@ def make_train_dataset():
 
     return sequence_list, label_list
 
-# 制作test dataset
+# make test dataset
 def make_val_dataset():
     label_list = []
     sequence_list = []
@@ -117,13 +117,13 @@ def make_val_dataset():
 
     return sequence_list, label_list
 
-# datas转tensor
+# datas to tensor
 def datas_totensor(datas, max_length):
     dict_file = open("dict.txt")
     table = dict_file.read()
     table = eval(table)
     nuc_length = table.__len__()
-    max_length = max_length # 氨基酸和核苷酸合并后的最大长度
+    max_length = max_length
     all_tensor = torch.empty((0, 1, max_length, nuc_length))
     all_tensor = torch.reshape(all_tensor, (0, 8, 94, 65))
     for str in datas:
@@ -143,7 +143,7 @@ def datas_totensor2(datas, max_length):
     table = dict_file.read()
     table = eval(table)
     nuc_length = table.__len__()
-    max_length = max_length # 氨基酸和核苷酸合并后的最大长度
+    max_length = max_length
     all_tensor = torch.empty((0, 1, max_length, nuc_length))
     all_tensor = torch.reshape(all_tensor, (0, 8, 94, 65))
     for str in datas:
@@ -158,18 +158,14 @@ def datas_totensor2(datas, max_length):
         all_tensor = torch.cat((all_tensor, tensor_str), 0)
     return all_tensor
 
-
-
-# 数据集分类并且打标签
+# dataset class and label
 def datas_label():
     list_dir = os.listdir("./jasper_data")
     data_len = list_dir.__len__()
     number = int(data_len * 0.9)
     for dir in list_dir[0:number]:
-        # 训练数据集中，转录因子可以结合DNA的数据
         if not os.path.exists(f"train_test/train/1/{dir}"):
             shutil.copytree(f"./jasper_data/{dir}/", f"train_test/train/1/{dir}")
-        # 训练数据集中，转录因子不可以结合DNA的数据
         tf_dir_list = os.listdir(f'./jasper_data/{dir}')
         tf_dir = tf_dir_list[1] if tf_dir_list[0][0:2] == 'MA' else tf_dir_list[0]
         target_dir_list = list_dir.copy()
@@ -184,10 +180,8 @@ def datas_label():
         shutil.copy(f"./jasper_data/{target_dir_number}/{target_dir}", f"train_test/train/0/{dir}/")
 
     for dir in list_dir[number:]:
-        # 测试数据集中，转录因子可以结合DNA的数据
         if not os.path.exists(f"train_test/test/1/{dir}"):
             shutil.copytree(f"./jasper_data/{dir}/", f"train_test/test/1/{dir}")
-        # 测试数据集中，转录因子不可以结合DNA的数据
         tf_dir_list = os.listdir(f'./jasper_data/{dir}')
         tf_dir = tf_dir_list[1] if tf_dir_list[0][0:2] == 'MA' else tf_dir_list[0]
         target_dir_list = list_dir.copy()
@@ -202,7 +196,7 @@ def datas_label():
         shutil.copy(f"./jasper_data/{target_dir_number}/{target_dir}", f"train_test/test/0/{dir}/")
 
 
-# 清洗数据集
+# clean dataset
 def clean_data():
     dir = './jasper_data/'
     dir_list = os.listdir(dir)
@@ -212,22 +206,17 @@ def clean_data():
         data_dir_list = os.listdir(data_dir)
         tf = data_dir_list[1] if data_dir_list[0][0:2] == 'MA' else data_dir_list[0]
         target = data_dir_list[0] if data_dir_list[0][0:2] == 'MA' else data_dir_list[1]
-
-        # 替换数据
         shutil.copy(f"D:/idm_download/sites/{target}", f"{data_dir}")
         with open(f"{data_dir}/{tf}", "r") as infile:
             if "Error" in infile.read():
                 print(data_dir)
                 rm_list.append(data_dir)
 
-    # 删除Error文件
     for dir in rm_list:
         shutil.rmtree(dir)
 
     print(True)
 
-
-# 得到list中最大长度的字符串
 def get_max_length(nuc_data):
     max_length = 0
     for i in nuc_data:
@@ -236,8 +225,6 @@ def get_max_length(nuc_data):
 
     return max_length
 
-
-# 记录数据集中的蛋白数据的最大长度，dna数据的最大长度，总最大长度
 def record_max_length():
     protein_list = []
     dna_list = []
@@ -290,12 +277,11 @@ def shuffle_data(nucdata, nuclabel):
     return nucdata, nuclabel
 
 
-# 制作数据集总表csv
+# make all csv
 def make_csvdata():
     dir_list = os.listdir("./jasper_data")
     # dir_list = dir_list[0:10]
     with open(f"./csv_data/tf_target_all.csv", "w+") as outfile:
-        # 蛋白和dna可以结合的
         for one_dir in dir_list:
             dir = f"./jasper_data/{one_dir}"
             tf_dir = os.listdir(dir)[1] if os.listdir(dir)[0][0:2] == 'MA' else os.listdir(dir)[0]
@@ -314,7 +300,6 @@ def make_csvdata():
                             target_data = target_data.replace("\n", "")
                             outfile.write(f"{protein},{target_data},1\n")
 
-        # 蛋白和dna不可以结合的
         for one_dir in dir_list:
             dir = f"./jasper_data/{one_dir}"
             new_list = dir_list.copy()
@@ -337,14 +322,13 @@ def make_csvdata():
                             target_data = target_data.replace("\n", "")
                             outfile.write(f"{protein},{target_data},0\n")
 
-# csv文件打乱
+# csv shuffle
 def shuffle_csv():
     data = pd.read_csv("./csv_data/tf_target_all.csv", header=None)
     data = shuffle(data)
     data = shuffle(data)
     data.to_csv('./csv_data/shuffle_tf_target_all.csv', index=False)
 
-# 制作训练集和测试集的csv
 def make_train_test_csv():
     data = pd.read_csv("./csv_data/shuffle_tf_target_all.csv")
     duandian = int(data.shape[0] * 0.8)
@@ -361,7 +345,6 @@ def make_train_test_csv():
     data.iloc[:duandian, :].to_csv("./train_test/train.csv", index=False)
     data.iloc[duandian:, :].to_csv("./train_test/test.csv", index=False)
 
-# 训练和测试数据集
 def make_dataset1(dir):
     sequence_list = []
     label_list = []
