@@ -26,6 +26,14 @@ TFBind Two files are required for input, one is the amino acid protein sequence 
 
 The output is 1 and 0. 1 represents the potential combination possibility in model calculation, and 0 represents the potential non-combination possibility.
 
+# Example
+
+pip install TFBind
+import TFBind
+tf = TFBind.TFBind()
+result = tf.is_combind(protein_sequence, dna_sequence)
+print(result)
+
 
 
 
