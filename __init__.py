@@ -16,16 +16,16 @@ class TFBind():
             self.max_length = dic['max_length']
         self.nuc_model = Nuc()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        # 使用 importlib.resources 读取文件内容
+        # use importlib.resources read content
         with pkg_resources.open_binary(use_model, "nuc_20.pth") as f:
             self.nuc_model.load_state_dict(torch.load(f))
             self.nuc_model.to(device)
 
     def is_combind(self, protein, dna):
         result = predict_target(protein, dna, self.nuc_model, self.max_length)
-        if result == "能够结合":
+        if result == "Combine":
             return "Combine"
-        elif result == "不能够结合":
+        elif result == "Not Combine":
             return "Not Combine"
 
 
