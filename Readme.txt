@@ -26,6 +26,9 @@ print(result)
 # Note
 {"protein_length_max": 1451, "dna_length_max": 150, "max_length": 1880}, these are the maximum training lengths of protein, DNA, and combined in the training data set. Use the input amino acid 80bp sequence as a sliding window to determine whether there is an amino acid sequence with a chip binding site. The specific code is in __init__.py.In the result list, the fields start, end, and dna are included, representing the start position, end position, and predicted binding sequence of the input sequence.
 
+Publication
+Liu J, Shi X, Zhang Z, Cen X, Lin L, Wang X, Chen Z, Zhang Y, Zheng X, Wu B, Miao Y. Deep Neural Network-Mining of Rice Drought-Responsive TF-TAG Modules by a Combinatorial Analysis of ATAC-Seq and RNA-Seq. Plant Cell Environ. 2025 Mar 31. doi: 10.1111/pce.15489. Epub ahead of print. PMID: 40165388.
+
 
 
 
